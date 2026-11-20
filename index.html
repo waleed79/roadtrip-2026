@@ -5,434 +5,374 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cut">
 <title>East Coast Road Trip</title>
 <meta name="description" content="Eight days from Chicago through Vermont, Acadia, Boston, New York and DC, Nov 21–28 2026.">
-<meta name="theme-color" content="#1e5e3f">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M3 4h26c0 13-4 21-13 25C7 25 3 17 3 4z' fill='%231e5e3f'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='none' stroke='%2334c759' stroke-width='5'/></svg>">
 <style>
 :root{
-  --paper:#eef1ef;      /* fog */
-  --surface:#ffffff;
-  --ink:#17201b;
-  --muted:#5e6a64;
-  --rule:#d5dcd8;
-  --sign:#1e5e3f;       /* highway guide-sign green */
-  --on-sign:#ffffff;
-  --lane:#e0ac2b;       /* lane-line yellow */
-  --road:#3a423e;
-  --done:#1e5e3f;
+  --bg:#f5f5f7;
+  --cell:#ffffff;
+  --label:#1d1d1f;
+  --secondary:#6e6e73;
+  --tertiary:#aeaeb2;
+  --sep:#d2d2d7;
+  --fill:#f0f0f2;
+  --blue:#0071e3;
+  --green:#34c759;
+  --red:#ff3b30;
+  --indigo:#5856d6;
+  --ring-track:#e5e5ea;
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --paper:#121815; --surface:#1a221e; --ink:#e6ece8; --muted:#97a39c; --rule:#2b3530;
-    --sign:#2f7d55; --on-sign:#ffffff; --lane:#e2b442; --road:#56605a; --done:#5fbf8a;
+    --bg:#000000; --cell:#1c1c1e; --label:#f5f5f7; --secondary:#98989d; --tertiary:#636366;
+    --sep:#38383a; --fill:#2c2c2e; --blue:#0a84ff; --green:#30d158; --red:#ff453a; --indigo:#5e5ce6;
+    --ring-track:#2c2c2e;
   }
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 "Overpass",system-ui,sans-serif}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--lane);outline-offset:2px;border-radius:4px}
-.wrap{max-width:620px;margin:0 auto;padding:0 16px}
-button{font:inherit;color:inherit}
+body{
+  margin:0;background:var(--bg);color:var(--label);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,sans-serif;
+  font-size:17px;line-height:1.35;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+a{color:var(--blue);text-decoration:none}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 45%,transparent);outline-offset:2px;border-radius:10px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
 
-/* ---------- Top bar ---------- */
-.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.top .wrap{display:flex;align-items:center;gap:12px;height:44px}
-.top .name{font-weight:600;font-size:14px;white-space:nowrap}
-.meter{flex:1;height:4px;border-radius:2px;background:var(--rule);overflow:hidden}
-.meter i{display:block;height:100%;width:0;background:var(--done);transition:width .35s ease}
-.top .count{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* ---------- Header ---------- */
+header{padding:48px 0 28px;display:flex;align-items:center;gap:20px}
+header .t{flex:1;min-width:0}
+h1{margin:0;font-size:clamp(34px,8.5vw,48px);line-height:1.05;font-weight:700;letter-spacing:-.025em}
+.sub{margin:8px 0 0;color:var(--secondary);font-size:17px}
+.ring{flex:0 0 auto;width:84px;text-align:center}
+.ring svg{display:block;width:84px;height:84px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:11;stroke-linecap:round}
+.ring .track{stroke:var(--ring-track)}
+.ring .val{stroke:var(--green);transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
+.ring .n{display:block;font-size:13px;color:var(--secondary);margin-top:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
 
-/* ---------- Hero ---------- */
-.hero{padding:28px 0 8px}
-.hero h1{font-weight:800;font-size:clamp(40px,11vw,64px);line-height:.95;letter-spacing:-.02em;margin:0}
-.hero p{margin:14px 0 0;color:var(--muted);font-size:17px;max-width:34ch}
+/* ---------- Day list ---------- */
+.list{display:flex;flex-direction:column;gap:12px}
+.day{background:var(--cell);border-radius:18px;overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px}
+.cal{flex:0 0 auto;width:46px;height:50px;border-radius:11px;background:var(--fill);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.cal small{font-size:10px;font-weight:600;color:var(--red);letter-spacing:.02em}
+.cal span{font-size:22px;font-weight:500;margin-top:3px;letter-spacing:-.02em}
+.day.today .cal{background:var(--red)}
+.day.today .cal small,.day.today .cal span{color:#fff}
+.row .t{flex:1;min-width:0}
+.row h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.row .meta{display:block;font-size:15px;color:var(--secondary);margin-top:2px}
+.tally{flex:0 0 auto;font-size:15px;color:var(--secondary);font-variant-numeric:tabular-nums}
+.day.complete .tally{color:var(--green);font-weight:600}
+.chev{flex:0 0 auto;width:13px;height:13px;color:var(--tertiary);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.day.open .chev{transform:rotate(90deg)}
 
-/* ---------- The road ---------- */
-.road{position:relative;margin:28px 0 8px;padding-left:56px}
-.road::before{ /* asphalt */
-  content:"";position:absolute;left:19px;top:8px;bottom:8px;width:6px;border-radius:3px;background:var(--road)}
-.road::after{ /* center line */
-  content:"";position:absolute;left:21.5px;top:14px;bottom:14px;width:1px;
-  background:repeating-linear-gradient(to bottom,var(--lane) 0 8px,transparent 8px 16px)}
+/* expand: animate height via grid rows */
+.panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1)}
+.day.open .panel{grid-template-rows:1fr}
+.panel > div{overflow:hidden;min-height:0}
+.inner{padding:0 16px 8px}
+.day:not(.open) .inner{visibility:hidden}
 
-.day{position:relative;margin-bottom:14px;scroll-margin-top:56px}
-.shield{position:absolute;left:-56px;top:4px;width:44px;height:48px;z-index:1}
-.shield svg{display:block;width:100%;height:100%}
-.shield path{fill:var(--sign);stroke:var(--paper);stroke-width:3}
-.shield text{fill:var(--on-sign);font:800 20px "Overpass",sans-serif}
-.day.today .shield path{stroke:var(--lane)}
-.day.complete .shield path{fill:var(--done)}
+/* settings-style rows */
+.cells{border-top:.5px solid var(--sep)}
+.cell{display:flex;align-items:center;gap:12px;padding:11px 0;min-height:52px;border-bottom:.5px solid var(--sep);color:var(--label)}
+.cell .ico{flex:0 0 auto;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff}
+.cell .ico svg{width:17px;height:17px}
+.cell .ico.bed{background:var(--indigo)}
+.cell .ico.car{background:var(--blue)}
+.cell .ico.web{background:#ff5a5f}
+.cell .tx{flex:1;min-width:0}
+.cell .tx b{display:block;font-weight:400}
+.cell .tx span{display:block;font-size:15px;color:var(--secondary)}
+.cell .go{flex:0 0 auto;width:8px;height:13px;color:var(--tertiary)}
+.note{font-size:13px;line-height:1.4;color:var(--secondary);padding:10px 0 0;margin:0}
 
-.card{background:var(--surface);border-radius:14px;border:1px solid var(--rule)}
-.head{display:flex;align-items:flex-start;gap:8px;width:100%;text-align:left;background:none;border:0;padding:14px 14px 14px 16px;cursor:pointer}
-.head .t{flex:1;min-width:0}
-.date{font-size:14px;color:var(--muted)}
-.date .now{color:var(--ink);font-weight:600}
-.head h2{margin:2px 0 0;font-size:20px;font-weight:800;line-height:1.2;letter-spacing:-.005em}
-.drive{font-size:14px;color:var(--muted);margin-top:2px}
-.tally{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:20px;white-space:nowrap}
-.day.complete .tally{color:var(--done);font-weight:600}
-.chev{width:18px;height:18px;margin-top:21px;color:var(--muted);transition:transform .2s}
-.day.open .chev{transform:rotate(180deg)}
-.body{display:none;padding:0 16px 14px}
-.day.open .body{display:block}
-
-.stay{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--rule)}
-.stay svg{flex:0 0 auto;width:20px;height:20px;margin-top:2px;color:var(--muted)}
-.stay b{font-weight:600}
-.stay .booked{font-size:13px;color:var(--done);font-weight:600;margin-left:6px;white-space:nowrap}
-.stay a{display:block;font-size:14px;color:var(--muted);text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:3px}
-.heads{font-size:14px;line-height:1.45;padding:10px 12px;border-left:3px solid var(--lane);background:color-mix(in srgb,var(--lane) 10%,transparent);border-radius:0 8px 8px 0;margin:2px 0 6px}
-
-.stop{font-size:15px;font-weight:600;color:var(--muted);margin:16px 0 2px}
+.group{margin-top:22px}
+.group h3{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--label);letter-spacing:-.01em}
 ul.places{list-style:none;margin:0;padding:0}
-ul.places li{display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--rule)}
-ul.places li:last-child{border-bottom:0}
-ul.places label{flex:1;min-width:0;display:flex;gap:12px;align-items:flex-start;padding:10px 0;cursor:pointer}
-.box{flex:0 0 auto;appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;border:2px solid var(--road);border-radius:6px;cursor:pointer;display:grid;place-items:center;transition:background .15s,border-color .15s}
-.box:checked{background:var(--done);border-color:var(--done)}
-.box:checked::after{content:"";width:6px;height:11px;border:solid var(--surface);border-width:0 2.5px 2.5px 0;transform:translate(0,-1px) rotate(45deg)}
-.pn{display:block;font-weight:500;line-height:1.3;padding-top:1px}
-.pnote{display:block;font-size:14px;color:var(--muted);line-height:1.35;margin-top:2px}
-li.checked .pn{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted)}
-.icon-btn{flex:0 0 auto;width:40px;height:40px;display:grid;place-items:center;border:0;background:none;border-radius:10px;color:var(--muted);cursor:pointer;text-decoration:none}
-.icon-btn:hover{background:var(--paper);color:var(--ink)}
-.icon-btn svg{width:18px;height:18px}
+.place{display:flex;align-items:center;gap:12px;min-height:50px;border-bottom:.5px solid var(--sep)}
+.place:last-child{border-bottom:0}
+.place label{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:11px 0;cursor:pointer}
+.check{flex:0 0 auto;appearance:none;-webkit-appearance:none;margin:0;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--tertiary);display:grid;place-items:center;cursor:pointer;transition:background .2s,border-color .2s}
+.check:checked{background:var(--green);border-color:var(--green)}
+.check:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:translateY(-1px) rotate(45deg)}
+.pn{display:block}
+.pnote{display:block;font-size:13px;color:var(--secondary);margin-top:1px}
+.place.done .pn{color:var(--secondary)}
+.map{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--blue)}
+.map svg{width:16px;height:16px}
+.empty{font-size:15px;color:var(--secondary);margin:18px 0 6px}
 
-.foot{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center;margin-top:12px;font-size:14px}
-.linkish{background:none;border:0;padding:6px 0;color:var(--sign);font-weight:600;cursor:pointer;text-decoration:none}
-@media (prefers-color-scheme: dark){ .linkish{color:var(--done)} }
-form.add{display:flex;gap:8px;margin-top:10px}
-form.add[hidden]{display:none}
-form.add input{flex:1;min-width:0;font:inherit;padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);color:var(--ink)}
-form.add button{border:0;border-radius:10px;padding:0 14px;background:var(--sign);color:var(--on-sign);font-weight:600;cursor:pointer}
+/* ---------- Budget ---------- */
+.section-title{margin:36px 0 8px 16px;font-size:13px;color:var(--secondary)}
+.card{background:var(--cell);border-radius:18px;padding:0 16px}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:.5px solid var(--sep)}
+.kv:last-child{border-bottom:0}
+.kv span:last-child{color:var(--secondary);font-variant-numeric:tabular-nums;text-align:right}
+.kv.strong span:last-child{color:var(--label);font-weight:600}
 
-/* ---------- Bottom ---------- */
-.end{padding:12px 0 56px;color:var(--muted);font-size:14px}
-details.budget{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:0 16px;margin-bottom:20px;color:var(--ink)}
-details.budget summary{cursor:pointer;padding:14px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between}
-details.budget summary::-webkit-details-marker{display:none}
-details.budget summary span{color:var(--muted);font-weight:400}
-details.budget dl{margin:0 0 12px;display:grid;grid-template-columns:1fr auto;font-size:15px}
-details.budget dt,details.budget dd{margin:0;padding:8px 0;border-top:1px solid var(--rule)}
-details.budget dd{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-.end p{margin:0 0 6px}
+footer{padding:16px 16px 56px;font-size:13px;color:var(--secondary);text-align:center}
+footer button{color:var(--blue);font-size:13px;margin-top:10px}
 
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
-@media (max-width:380px){ .road{padding-left:50px} .shield{left:-50px;width:40px;height:44px} .head h2{font-size:18px} }
 </style>
 </head>
 <body>
-
-<div class="top">
-  <div class="wrap">
-    <span class="name">Road trip</span>
-    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
-    <span class="count" id="count">0 of 0</span>
-  </div>
-</div>
-
 <main class="wrap">
-  <header class="hero">
-    <h1>East Coast<br>Road Trip</h1>
-    <p>Chicago to Acadia, Boston, New York and DC, then home. Nov 21–28, about 3,200 miles.</p>
+  <header>
+    <div class="t">
+      <h1>East Coast Road Trip</h1>
+      <p class="sub">November 21–28. Eight days, about 3,200 miles.</p>
+    </div>
+    <div class="ring" aria-live="polite">
+      <svg viewBox="0 0 84 84" aria-hidden="true">
+        <circle class="track" cx="42" cy="42" r="35"/>
+        <circle class="val" id="ringVal" cx="42" cy="42" r="35"/>
+      </svg>
+      <span class="n" id="ringText">0 of 0 seen</span>
+    </div>
   </header>
 
-  <div class="road" id="road"></div>
+  <div class="list" id="list"></div>
 
-  <section class="end">
-    <details class="budget">
-      <summary>Budget <span>$333.33 each for car + fuel</span></summary>
-      <dl>
-        <dt>Hotels</dt><dd>$900</dd>
-        <dt>Car ($450 + $480)</dt><dd>$930</dd>
-        <dt>Trip total</dt><dd>$1,900</dd>
-        <dt>Car + fuel, split 3 ways</dt><dd>$333.33</dd>
-        <dt>Distance</dt><dd>~3,200 mi</dd>
-      </dl>
-    </details>
-    <p>Checkmarks are saved on this phone only. Drive times are rough and don't include stops.</p>
-    <button class="linkish" id="reset" type="button">Clear all checkmarks</button>
-  </section>
+  <div class="section-title">Budget</div>
+  <div class="card">
+    <div class="kv"><span>Hotels</span><span>$900</span></div>
+    <div class="kv"><span>Car</span><span>$450 + $480 = $930</span></div>
+    <div class="kv"><span>Trip total</span><span>$1,900</span></div>
+    <div class="kv strong"><span>Car and fuel, per person</span><span>$333.33</span></div>
+  </div>
 </main>
 
+<footer>
+  Checkmarks are saved on this device.<br>
+  Drive times are estimates without stops.<br>
+  <button type="button" id="reset">Clear checkmarks</button>
+</footer>
+
 <script>
-const MAP = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+const MAP = q => "https://maps.google.com/?q=" + encodeURIComponent(q);
 const DIR = s => "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=" + encodeURIComponent(s[0]) +
   "&destination=" + encodeURIComponent(s[s.length-1]) +
   (s.length > 2 ? "&waypoints=" + encodeURIComponent(s.slice(1,-1).join("|")) : "");
 
-/* Only places in the town we're in, or right on the road we're driving. */
+/* Top sights only: in the town we're in, or right on the road. No food stops. */
 const DAYS = [
-{
-  id:"d1", date:"2026-11-21", title:"Chicago to Syracuse",
-  drive:"About 700 mi, 11 h of driving",
+{ id:"d1", date:"2026-11-21", title:"Chicago to Syracuse", meta:"700 mi, about 11 hours",
   route:["Chicago, IL","Ann Arbor, MI","Erie, PA","6609 Thompson Road, East Syracuse, NY 13206"],
-  stay:{name:"Days Inn by Wyndham Syracuse", addr:"6609 Thompson Road, East Syracuse, NY 13206", booked:true},
-  heads:"Longest day of the trip. Leave Chicago early and swap drivers every couple of hours.",
+  stay:{name:"Days Inn by Wyndham Syracuse", addr:"6609 Thompson Road, East Syracuse, NY 13206"},
+  note:"Longest driving day. Leave early and swap drivers every couple of hours.",
   groups:[
-    {stop:"Ann Arbor", items:[
-      {id:"aa-bighouse", name:"Michigan Stadium", note:"The Big House, largest stadium in the US", q:"Michigan Stadium, Ann Arbor"},
-      {id:"aa-diag", name:"The Diag and Law Quad", note:"Center of campus; the Law Quad is the photo spot", q:"University of Michigan Law Quadrangle"},
-      {id:"aa-zingermans", name:"Zingerman's Delicatessen", note:"Sandwiches for the road", q:"Zingerman's Delicatessen, Ann Arbor"},
-      {id:"aa-main", name:"Main Street", note:"Downtown cafés, a short walk from campus", q:"Main Street, Ann Arbor"}
+    {place:"Ann Arbor", items:[
+      {id:"aa-bighouse", name:"Michigan Stadium", note:"The Big House", q:"Michigan Stadium, Ann Arbor"},
+      {id:"aa-lawquad", name:"Law Quadrangle", q:"University of Michigan Law Quadrangle"},
+      {id:"aa-diag", name:"The Diag", q:"The Diag, University of Michigan"},
+      {id:"aa-arb", name:"Nichols Arboretum", q:"Nichols Arboretum, Ann Arbor"}
     ]},
-    {stop:"Syracuse", items:[
-      {id:"syr-dino", name:"Dinosaur Bar-B-Que", note:"Dinner at the original location", q:"Dinosaur Bar-B-Que Syracuse"},
-      {id:"syr-armory", name:"Armory Square", note:"Downtown restaurants and bars", q:"Armory Square, Syracuse"}
+    {place:"Syracuse", items:[
+      {id:"syr-armory", name:"Armory Square", q:"Armory Square, Syracuse"},
+      {id:"syr-clinton", name:"Clinton Square", q:"Clinton Square, Syracuse"},
+      {id:"syr-su", name:"Syracuse University", note:"Crouse College and the Quad", q:"Crouse College, Syracuse University"},
+      {id:"syr-lake", name:"Onondaga Lake Park", q:"Onondaga Lake Park"}
     ]}
-  ]
-},
-{
-  id:"d2", date:"2026-11-22", title:"Syracuse to Woodstock, through the Green Mountains",
-  drive:"About 330 mi, 6 h of driving",
+  ]},
+{ id:"d2", date:"2026-11-22", title:"Green Mountains to Woodstock", meta:"330 mi, about 6 hours",
   route:["East Syracuse, NY","Robert Frost Interpretive Trail, Ripton, VT","Texas Falls Recreation Area, Hancock, VT","Woodstock, VT","2617 Killington Road, Killington, VT 05751"],
-  stay:{name:"Killington Mountain Lodge", addr:"2617 Killington Road, Killington, VT 05751", booked:true},
-  heads:"Cross the forest on VT-125 (Middlebury Gap), then VT-100 and US-4. Sunset is around 4:15, so do the forest first.",
+  stay:{name:"Killington Mountain Lodge", addr:"2617 Killington Road, Killington, VT 05751"},
+  note:"Cross the forest on VT-125, then take VT-100 and US-4 to Woodstock. Sunset is around 4:15 pm.",
   groups:[
-    {stop:"Green Mountain National Forest, on VT-125", items:[
-      {id:"gm-frost", name:"Robert Frost Interpretive Trail", note:"Easy 1-mile loop at the roadside", q:"Robert Frost Interpretive Trail, Ripton VT"},
-      {id:"gm-gap", name:"Middlebury Gap", note:"The mountain pass itself", q:"Middlebury Gap, Vermont"},
-      {id:"gm-texas", name:"Texas Falls", note:"Short walk to cascades, just off VT-125", q:"Texas Falls Recreation Area, Hancock VT"}
+    {place:"Green Mountain National Forest", items:[
+      {id:"gm-gap", name:"Middlebury Gap", note:"The pass on VT-125", q:"Middlebury Gap, Vermont"},
+      {id:"gm-breadloaf", name:"Bread Loaf Campus", note:"Yellow farmhouses on VT-125", q:"Bread Loaf Campus, Ripton VT"},
+      {id:"gm-frost", name:"Robert Frost Trail", note:"Easy 1-mile loop", q:"Robert Frost Interpretive Trail, Ripton VT"},
+      {id:"gm-texas", name:"Texas Falls", q:"Texas Falls Recreation Area, Hancock VT"}
     ]},
-    {stop:"On US-4", items:[
-      {id:"kl-longtrail", name:"Long Trail Brewing", note:"Right on the road between Killington and Woodstock", q:"Long Trail Brewing Company, Bridgewater Corners VT"}
-    ]},
-    {stop:"Woodstock", items:[
-      {id:"wd-green", name:"Village Green and Elm Street", note:"", q:"Woodstock Village Green, Vermont"},
-      {id:"wd-bridge", name:"Middle Covered Bridge", note:"In the village center", q:"Middle Covered Bridge, Woodstock VT"},
-      {id:"wd-mbr", name:"Marsh-Billings-Rockefeller Park", note:"Walk up Mt. Tom for the view over town", q:"Marsh-Billings-Rockefeller National Historical Park"}
-    ]},
-    {stop:"Killington", items:[
-      {id:"kl-gondola", name:"K-1 Gondola", note:"At the resort, if ski season has started", q:"Killington Peak Lodge"}
+    {place:"Woodstock", items:[
+      {id:"wd-green", name:"Village Green", q:"Woodstock Village Green, Vermont"},
+      {id:"wd-bridge", name:"Middle Covered Bridge", q:"Middle Covered Bridge, Woodstock VT"},
+      {id:"wd-mbr", name:"Marsh-Billings-Rockefeller Park", q:"Marsh-Billings-Rockefeller National Historical Park"},
+      {id:"wd-tom", name:"Mount Tom", note:"Short climb for the view over town", q:"Faulkner Trail, Mount Tom, Woodstock VT"}
     ]}
-  ]
-},
-{
-  id:"d3", date:"2026-11-23", title:"Acadia National Park",
-  drive:"About 300 mi to Bar Harbor, 6 h of driving",
+  ]},
+{ id:"d3", date:"2026-11-23", title:"Acadia National Park", meta:"300 mi, about 6 hours",
   route:["Killington, VT","Bass Harbor Head Light Station, ME","119 Eden Street, Bar Harbor, ME 04609"],
-  stay:{name:"Atlantic Oceanside Hotel", addr:"119 Eden Street, Bar Harbor, ME 04609", booked:true},
-  heads:"Sunset is about 4:00 pm. Leave very early, or save Cadillac Mountain for tomorrow's sunrise. You'll need a park pass.",
+  stay:{name:"Atlantic Oceanside Hotel", addr:"119 Eden Street, Bar Harbor, ME 04609"},
+  note:"Sunset is about 4:00 pm, so leave early. Cadillac Mountain also works at sunrise tomorrow. You need a park pass.",
   groups:[
-    {stop:"Your plan", items:[
-      {id:"ac-bass", name:"Bass Harbor Head Light", note:"Best from the rocks below at sunset", q:"Bass Harbor Head Light Station"},
-      {id:"ac-thunder", name:"Thunder Hole", note:"Loudest about 2 h before high tide", q:"Thunder Hole, Acadia"},
-      {id:"ac-sand", name:"Sand Beach", note:"", q:"Sand Beach, Acadia National Park"},
-      {id:"ac-jordan", name:"Jordan Pond", note:"Flat path with a view of the Bubbles", q:"Jordan Pond, Acadia National Park"},
-      {id:"ac-cadillac", name:"Cadillac Mountain", note:"Highest point on the US Atlantic coast", q:"Cadillac Mountain Summit"}
-    ]},
-    {stop:"Along the Park Loop Road", items:[
-      {id:"ac-ocean", name:"Ocean Path", note:"Coastal walk from Sand Beach to Thunder Hole", q:"Ocean Path Trail, Acadia"},
-      {id:"ac-otter", name:"Otter Cliff", note:"Next stop after Thunder Hole", q:"Otter Cliff, Acadia"}
-    ]},
-    {stop:"Bar Harbor", items:[
-      {id:"ac-shore", name:"Shore Path", note:"Evening walk along the water in town", q:"Shore Path, Bar Harbor"}
+    {place:"Acadia", items:[
+      {id:"ac-cadillac", name:"Cadillac Mountain", q:"Cadillac Mountain Summit"},
+      {id:"ac-jordan", name:"Jordan Pond", q:"Jordan Pond, Acadia National Park"},
+      {id:"ac-sand", name:"Sand Beach", q:"Sand Beach, Acadia National Park"},
+      {id:"ac-thunder", name:"Thunder Hole", q:"Thunder Hole, Acadia"},
+      {id:"ac-bass", name:"Bass Harbor Head Light", q:"Bass Harbor Head Light Station"}
     ]}
-  ]
-},
-{
-  id:"d4", date:"2026-11-24", title:"Acadia sunrise, then Boston",
-  drive:"About 280 mi, 5 h of driving",
-  route:["Bar Harbor, ME","Freeport, ME","250 Monsignor O'Brien Highway, Cambridge, MA 02141"],
-  stay:{name:"Airbnb in Cambridge", addr:"250 Monsignor O'Brien Highway, Cambridge, MA 02141", booked:true, link:"https://www.airbnb.com/l/Sw1Korlt"},
-  heads:"Until early March, Cadillac Mountain gets the first sunrise in the US, around 6:50 am. Bring warm layers.",
-  groups:[
-    {stop:"Acadia", items:[
-      {id:"d4-sunrise", name:"Sunrise on Cadillac Mountain", note:"", q:"Cadillac Mountain Summit"}
-    ]},
-    {stop:"Right off I-295", items:[
-      {id:"d4-llbean", name:"L.L.Bean flagship, Freeport", note:"Open 24 hours, a minute from the exit", q:"L.L.Bean Flagship Store, Freeport ME"},
-      {id:"d4-oldport", name:"Old Port, Portland", note:"Seafood lunch next to the highway", q:"Old Port, Portland ME"}
-    ]}
-  ]
-},
-{
-  id:"d5", date:"2026-11-25", title:"Boston and Providence to New York",
-  drive:"About 220 mi, 4.5 h of driving",
+  ]},
+{ id:"d4", date:"2026-11-24", title:"Acadia to Boston", meta:"280 mi, about 5 hours",
+  route:["Bar Harbor, ME","250 Monsignor O'Brien Highway, Cambridge, MA 02141"],
+  stay:{name:"Airbnb, Cambridge", addr:"250 Monsignor O'Brien Highway, Cambridge, MA 02141", link:"https://www.airbnb.com/l/Sw1Korlt"},
+  note:"Until early March, Cadillac Mountain gets the first sunrise in the US, around 6:50 am.",
+  groups:[]},
+{ id:"d5", date:"2026-11-25", title:"Boston and Providence to New York", meta:"220 mi, about 4.5 hours",
   route:["Cambridge, MA","Providence, RI","New York, NY"],
-  stay:{name:"Airbnb in New York", addr:"", booked:false, link:"https://www.airbnb.com/l/S04Uihm8"},
-  heads:"The day before Thanksgiving is one of the busiest travel days of the year. Get through Connecticut before mid-afternoon if you can.",
+  stay:{name:"Airbnb, New York", addr:"", link:"https://www.airbnb.com/l/S04Uihm8"},
+  note:"Heavy traffic the day before Thanksgiving. Macy's parade balloons are inflated tonight near the Natural History Museum.",
   groups:[
-    {stop:"Boston and Cambridge", items:[
-      {id:"bos-freedom", name:"Freedom Trail", note:"Boston Common, Faneuil Hall and the North End in one walk", q:"Freedom Trail, Boston"},
-      {id:"bos-acorn", name:"Public Garden and Acorn Street", note:"", q:"Acorn Street, Boston"},
-      {id:"bos-north", name:"Cannoli in the North End", note:"Mike's or Modern Pastry", q:"Mike's Pastry, Boston"},
-      {id:"bos-harvard", name:"Harvard Yard", note:"", q:"Harvard Yard, Cambridge"},
-      {id:"bos-mit", name:"MIT Great Dome", note:"Near the Airbnb", q:"Killian Court, MIT"}
+    {place:"Boston", items:[
+      {id:"bos-freedom", name:"Freedom Trail", note:"Boston Common to Faneuil Hall", q:"Freedom Trail, Boston"},
+      {id:"bos-acorn", name:"Beacon Hill and Acorn Street", q:"Acorn Street, Boston"},
+      {id:"bos-harvard", name:"Harvard Yard", q:"Harvard Yard, Cambridge"},
+      {id:"bos-mit", name:"MIT Great Dome", q:"Killian Court, MIT"}
     ]},
-    {stop:"Providence, right on I-95", items:[
-      {id:"pvd-federal", name:"Federal Hill", note:"Italian food on Atwells Avenue", q:"Atwells Avenue, Providence"},
-      {id:"pvd-statehouse", name:"Rhode Island State House", note:"Next to the highway downtown", q:"Rhode Island State House"},
-      {id:"pvd-benefit", name:"Benefit Street and College Hill", note:"Historic houses near Brown", q:"Benefit Street, Providence"}
-    ]},
-    {stop:"New York, tonight", items:[
-      {id:"ny-balloons", name:"Macy's balloon inflation", note:"Around the Natural History Museum on Central Park West, usually afternoon to evening", q:"American Museum of Natural History"}
+    {place:"Providence", items:[
+      {id:"pvd-statehouse", name:"Rhode Island State House", q:"Rhode Island State House"},
+      {id:"pvd-benefit", name:"Benefit Street", note:"Historic houses on College Hill", q:"Benefit Street, Providence"},
+      {id:"pvd-waterplace", name:"WaterPlace Park and Riverwalk", q:"WaterPlace Park, Providence"},
+      {id:"pvd-prospect", name:"Prospect Terrace Park", note:"View over the city", q:"Prospect Terrace Park, Providence"}
     ]}
-  ]
-},
-{
-  id:"d6", date:"2026-11-26", title:"Thanksgiving in New York, then DC",
-  drive:"About 230 mi, 4.5 h of driving",
+  ]},
+{ id:"d6", date:"2026-11-26", title:"Thanksgiving in New York", meta:"Then 230 mi to DC, about 4.5 hours",
   route:["New York, NY","4400 Connecticut Avenue NW, Washington, DC 20008"],
-  stay:{name:"Days Inn Washington DC, Connecticut Ave", addr:"4400 Connecticut Avenue NW, Washington, DC 20008", booked:false},
-  heads:"The parade runs about 8:30 to noon. Get a spot on Central Park West by 7. Midtown streets close, so take the subway.",
+  stay:{name:"Days Inn, Connecticut Avenue", addr:"4400 Connecticut Avenue NW, Washington, DC 20008"},
+  note:"Parade runs about 8:30 am to noon. Be on Central Park West by 7. Use the subway.",
   groups:[
-    {stop:"New York", items:[
-      {id:"ny-parade", name:"Macy's Thanksgiving Day Parade", note:"Central Park West is calmer than Herald Square", q:"Central Park West & W 72nd St, New York"},
-      {id:"ny-central", name:"Central Park", note:"Bethesda Terrace and Bow Bridge", q:"Bethesda Terrace, Central Park"},
-      {id:"ny-times", name:"Times Square", note:"", q:"Times Square, New York"},
-      {id:"ny-rock", name:"Rockefeller Center", note:"Top of the Rock has the best skyline view", q:"Top of the Rock"},
-      {id:"ny-grand", name:"Grand Central Terminal", note:"", q:"Grand Central Terminal"},
-      {id:"ny-911", name:"9/11 Memorial", note:"", q:"9/11 Memorial"},
-      {id:"ny-ferry", name:"Staten Island Ferry", note:"Free, passes the Statue of Liberty", q:"Whitehall Terminal, New York"},
-      {id:"ny-bridge", name:"Brooklyn Bridge", note:"", q:"Brooklyn Bridge"}
+    {place:"New York", items:[
+      {id:"ny-parade", name:"Macy's Thanksgiving Day Parade", q:"Central Park West & W 72nd St, New York"},
+      {id:"ny-central", name:"Central Park", q:"Bethesda Terrace, Central Park"},
+      {id:"ny-times", name:"Times Square", q:"Times Square, New York"},
+      {id:"ny-bridge", name:"Brooklyn Bridge", q:"Brooklyn Bridge"}
     ]}
-  ]
-},
-{
-  id:"d7", date:"2026-11-27", title:"Washington, DC, then Parkersburg",
-  drive:"About 300 mi, 5.5 h of driving",
+  ]},
+{ id:"d7", date:"2026-11-27", title:"Washington, DC", meta:"Then 300 mi to Parkersburg, about 5.5 hours",
   route:["Washington, DC","97 Emerson Commons Blvd, Parkersburg, WV 26104"],
-  stay:{name:"Sleep Inn & Suites Parkersburg", addr:"97 Emerson Commons Blvd, Parkersburg, WV 26104", booked:false},
-  heads:"Smithsonian museums are free and open today. Air and Space needs a free timed pass, so book it online.",
+  stay:{name:"Sleep Inn & Suites Parkersburg", addr:"97 Emerson Commons Blvd, Parkersburg, WV 26104"},
+  note:"Smithsonian museums are free. Air and Space needs a free timed pass booked online.",
   groups:[
-    {stop:"National Mall", items:[
-      {id:"dc-capitol", name:"US Capitol", note:"", q:"United States Capitol"},
-      {id:"dc-air", name:"Air and Space Museum", note:"", q:"National Air and Space Museum"},
-      {id:"dc-nh", name:"Natural History Museum", note:"", q:"National Museum of Natural History"},
-      {id:"dc-wamo", name:"Washington Monument", note:"", q:"Washington Monument"},
-      {id:"dc-whitehouse", name:"White House", note:"From Lafayette Square", q:"Lafayette Square, Washington DC"},
-      {id:"dc-wwii", name:"World War II Memorial", note:"", q:"World War II Memorial, Washington DC"},
-      {id:"dc-lincoln", name:"Lincoln Memorial", note:"", q:"Lincoln Memorial"},
-      {id:"dc-mlk", name:"MLK and Jefferson Memorials", note:"Around the Tidal Basin", q:"Martin Luther King Jr. Memorial"}
+    {place:"Washington", items:[
+      {id:"dc-lincoln", name:"Lincoln Memorial", q:"Lincoln Memorial"},
+      {id:"dc-wamo", name:"Washington Monument", q:"Washington Monument"},
+      {id:"dc-capitol", name:"US Capitol", q:"United States Capitol"},
+      {id:"dc-air", name:"Air and Space Museum", q:"National Air and Space Museum"}
     ]}
-  ]
-},
-{
-  id:"d8", date:"2026-11-28", title:"Parkersburg to Chicago",
-  drive:"About 520 mi, 8 h of driving",
-  route:["Parkersburg, WV","Columbus, OH","Indianapolis, IN","Chicago, IL"],
-  stay:null, heads:"",
+  ]},
+{ id:"d8", date:"2026-11-28", title:"Home through Columbus", meta:"520 mi, about 8 hours",
+  route:["Parkersburg, WV","Columbus, OH","Chicago, IL"],
+  stay:null, note:"",
   groups:[
-    {stop:"Lunch and stretch stops on the highway", items:[
-      {id:"d8-german", name:"German Village, Columbus", note:"Cream puffs at Schmidt's, just off I-70", q:"Schmidt's Sausage Haus, Columbus"},
-      {id:"d8-indy", name:"Monument Circle, Indianapolis", note:"Downtown, minutes from I-65", q:"Monument Circle, Indianapolis"},
-      {id:"d8-home", name:"Home", note:"", q:"Chicago, IL"}
+    {place:"Columbus", items:[
+      {id:"cbus-statehouse", name:"Ohio Statehouse", q:"Ohio Statehouse"},
+      {id:"cbus-german", name:"German Village", note:"Brick streets, just off I-70", q:"German Village, Columbus"},
+      {id:"cbus-scioto", name:"Scioto Mile", note:"Riverfront park downtown", q:"Scioto Mile, Columbus"},
+      {id:"cbus-short", name:"Short North Arts District", q:"Short North Arts District"}
     ]}
-  ]
-}
+  ]}
 ];
 
-/* ---------- State (this device only) ---------- */
+/* ---------- State: checkmarks persist on this device; days always start closed ---------- */
 const KEY = "roadtrip2026:v1";
-let state = {checked:{}, custom:{}, open:{}};
-try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) state = Object.assign(state, s, {open: s.open || {}}); } catch(e){}
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} };
+let checked = {};
+try { checked = (JSON.parse(localStorage.getItem(KEY)) || {}).checked || {}; } catch(e){}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({checked})); } catch(e){} };
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pad = n => String(n).padStart(2,"0");
-const now = new Date();
-const TODAY = now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
-const focusId = (DAYS.find(d => d.date === TODAY) || (TODAY < DAYS[0].date ? DAYS[0] : null))?.id;
-const fmtDate = iso => new Date(iso+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});
-const isOpen = d => d.id in state.open ? state.open[d.id] : d.id === focusId;
-const items = d => d.groups.flatMap(g => g.items).concat(state.custom[d.id] || []);
+const d0 = new Date(), TODAY = d0.getFullYear()+"-"+pad(d0.getMonth()+1)+"-"+pad(d0.getDate());
+const allItems = d => d.groups.flatMap(g => g.items);
 
-const ICON = {
-  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
-  bed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V6M3 13h18v5M21 13a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="10.5" r="1.5"/></svg>',
-  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'
-};
-const shield = n => `<div class="shield" aria-hidden="true"><svg viewBox="0 0 44 48"><path d="M3 3h38c0 22-5 33-19 42C8 36 3 25 3 3z"/><text x="22" y="29" text-anchor="middle">${n}</text></svg></div>`;
-
-const place = (it, custom) => {
-  const on = !!state.checked[it.id];
-  return `<li class="${on?"checked":""}">
-    <label><input class="box" type="checkbox" ${on?"checked":""} data-check="${esc(it.id)}">
-      <span><span class="pn">${esc(it.name)}</span>${it.note?`<span class="pnote">${esc(it.note)}</span>`:""}</span></label>
-    <a class="icon-btn" href="${MAP(it.q||it.name)}" target="_blank" rel="noopener" aria-label="Open ${esc(it.name)} in Google Maps">${ICON.pin}</a>
-    ${custom?`<button class="icon-btn" type="button" data-rm="${esc(it.id)}" aria-label="Remove ${esc(it.name)}">${ICON.x}</button>`:""}
-  </li>`;
+const I = {
+  chev:'<svg class="chev" viewBox="0 0 8 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5l5 5-5 5"/></svg>',
+  go:'<svg class="go" viewBox="0 0 8 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5l5 5-5 5"/></svg>',
+  bed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 14h18v5M21 14a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="11" r="1.6" fill="currentColor"/></svg>',
+  car:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 21l8-4 8 4z"/></svg>',
+  web:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9H3z"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>'
 };
 
-function render(){
-  let total = 0, seen = 0;
-  document.getElementById("road").innerHTML = DAYS.map((d,i) => {
-    const all = items(d), done = all.filter(x => state.checked[x.id]).length;
-    total += all.length; seen += done;
-    const complete = all.length && done === all.length;
-    const open = isOpen(d), today = d.date === TODAY;
-    const s = d.stay;
-    const stay = s ? `<div class="stay">${ICON.bed}<div>
-        <b>${esc(s.name)}</b>${s.booked?'<span class="booked">Booked</span>':""}
-        ${s.addr?`<a href="${MAP(s.addr)}" target="_blank" rel="noopener">${esc(s.addr)}</a>`:""}
-        ${s.link?`<a href="${esc(s.link)}" target="_blank" rel="noopener">Airbnb listing</a>`:""}
-      </div></div>` : "";
-    const custom = state.custom[d.id] || [];
-    return `<article class="day ${open?"open":""} ${today?"today":""} ${complete?"complete":""}" id="${d.id}">
-      ${shield(i+1)}
-      <div class="card">
-        <button class="head" type="button" data-toggle="${d.id}" aria-expanded="${open}">
-          <span class="t">
-            <span class="date">${today?'<span class="now">Today, </span>':""}${fmtDate(d.date)}</span>
-            <h2>${esc(d.title)}</h2>
-            <span class="drive">${esc(d.drive)}</span>
-          </span>
-          <span class="tally">${done}/${all.length}</span>
-          ${ICON.chev}
-        </button>
-        <div class="body">
-          ${stay}
-          ${d.heads?`<div class="heads">${esc(d.heads)}</div>`:""}
-          ${d.groups.map(g => `<div class="stop">${esc(g.stop)}</div><ul class="places">${g.items.map(it => place(it,false)).join("")}</ul>`).join("")}
-          ${custom.length?`<div class="stop">Added by us</div><ul class="places">${custom.map(it => place(it,true)).join("")}</ul>`:""}
-          <div class="foot">
-            <a class="linkish" href="${DIR(d.route)}" target="_blank" rel="noopener">Directions for the day</a>
-            <button class="linkish" type="button" data-show-add="${d.id}">Add a place</button>
-          </div>
-          <form class="add" data-add="${d.id}" hidden>
-            <input name="p" placeholder="Place name" autocomplete="off" maxlength="120" aria-label="New place name">
-            <button type="submit">Add</button>
-          </form>
-        </div>
-      </div>
-    </article>`;
-  }).join("");
-  document.getElementById("meter").style.width = (total ? seen/total*100 : 0) + "%";
-  document.getElementById("count").textContent = `${seen} of ${total} seen`;
+function dayHTML(d){
+  const dt = new Date(d.date+"T12:00:00");
+  const wd = dt.toLocaleDateString("en-US",{weekday:"short"}).toUpperCase();
+  const s = d.stay;
+  const cells = [
+    s ? `<a class="cell" href="${s.addr?MAP(s.addr):s.link}" target="_blank" rel="noopener">
+          <span class="ico bed">${I.bed}</span>
+          <span class="tx"><b>${esc(s.name)}</b>${s.addr?`<span>${esc(s.addr)}</span>`:""}</span>${I.go}</a>` : "",
+    s && s.link ? `<a class="cell" href="${esc(s.link)}" target="_blank" rel="noopener">
+          <span class="ico web">${I.web}</span><span class="tx"><b>Airbnb listing</b></span>${I.go}</a>` : "",
+    `<a class="cell" href="${DIR(d.route)}" target="_blank" rel="noopener">
+          <span class="ico car">${I.car}</span><span class="tx"><b>Directions</b><span>${esc(d.from)} to ${esc(d.to)}</span></span>${I.go}</a>`
+  ].join("");
+  const groups = d.groups.length ? d.groups.map(g => `
+      <div class="group"><h3>${esc(g.place)}</h3><ul class="places">${g.items.map(it => `
+        <li class="place${checked[it.id]?" done":""}">
+          <label><input class="check" type="checkbox" data-id="${esc(it.id)}"${checked[it.id]?" checked":""}>
+            <span><span class="pn">${esc(it.name)}</span>${it.note?`<span class="pnote">${esc(it.note)}</span>`:""}</span></label>
+          <a class="map" href="${MAP(it.q)}" target="_blank" rel="noopener" aria-label="${esc(it.name)} in Maps">${I.pin}</a>
+        </li>`).join("")}</ul></div>`).join("")
+    : `<p class="empty">Mostly a driving day.</p>`;
+  return `<section class="day${d.date===TODAY?" today":""}" id="${d.id}">
+    <button class="row" type="button" aria-expanded="false" aria-controls="${d.id}-p">
+      <span class="cal" aria-hidden="true"><small>${wd}</small><span>${dt.getDate()}</span></span>
+      <span class="t"><h2>${esc(d.title)}</h2><span class="meta">${esc(d.meta)}</span></span>
+      <span class="tally"></span>${I.chev}
+    </button>
+    <div class="panel" id="${d.id}-p"><div><div class="inner">
+      <div class="cells">${cells}</div>
+      ${d.note?`<p class="note">${esc(d.note)}</p>`:""}
+      ${groups}
+    </div></div></div>
+  </section>`;
 }
 
-document.addEventListener("change", e => {
-  const id = e.target.dataset.check; if (!id) return;
-  if (e.target.checked) state.checked[id] = Date.now(); else delete state.checked[id];
-  save(); render();
+// Plain-language start and end of each day's drive, for the Directions row
+const LEGS = {d1:["Chicago","Syracuse"], d2:["Syracuse","Killington"], d3:["Killington","Bar Harbor"], d4:["Bar Harbor","Cambridge"],
+  d5:["Cambridge","New York"], d6:["New York","Washington"], d7:["Washington","Parkersburg"], d8:["Parkersburg","Chicago"]};
+DAYS.forEach(d => { [d.from, d.to] = LEGS[d.id]; });
+
+const list = document.getElementById("list");
+list.innerHTML = DAYS.map(dayHTML).join("");
+
+const C = 2 * Math.PI * 35;
+const ringVal = document.getElementById("ringVal");
+ringVal.style.strokeDasharray = C;
+
+function refresh(){
+  let total = 0, seen = 0;
+  DAYS.forEach(d => {
+    const items = allItems(d), done = items.filter(x => checked[x.id]).length;
+    total += items.length; seen += done;
+    const el = document.getElementById(d.id);
+    el.querySelector(".tally").textContent = items.length ? `${done}/${items.length}` : "";
+    el.classList.toggle("complete", items.length > 0 && done === items.length);
+  });
+  ringVal.style.strokeDashoffset = total ? C * (1 - seen/total) : C;
+  document.getElementById("ringText").textContent = `${seen} of ${total} seen`;
+}
+
+list.addEventListener("click", e => {
+  const row = e.target.closest(".row"); if (!row) return;
+  const day = row.parentElement, open = !day.classList.contains("open");
+  day.classList.toggle("open", open);
+  row.setAttribute("aria-expanded", open);
 });
-document.addEventListener("click", e => {
-  const t = e.target.closest("[data-toggle]");
-  if (t) { const d = DAYS.find(x => x.id === t.dataset.toggle); state.open[d.id] = !isOpen(d); save(); render(); return; }
-  const rm = e.target.closest("[data-rm]");
-  if (rm) { for (const k in state.custom) state.custom[k] = state.custom[k].filter(x => x.id !== rm.dataset.rm); delete state.checked[rm.dataset.rm]; save(); render(); return; }
-  const sa = e.target.closest("[data-show-add]");
-  if (sa) { const f = document.querySelector(`[data-add="${sa.dataset.showAdd}"]`); f.hidden = false; f.p.focus(); }
-});
-document.addEventListener("submit", e => {
-  const f = e.target.closest("[data-add]"); if (!f) return;
-  e.preventDefault();
-  const name = f.p.value.trim(); if (!name) return;
-  (state.custom[f.dataset.add] ||= []).push({id:"c-"+Date.now().toString(36), name, q:name});
-  save(); render();
+list.addEventListener("change", e => {
+  const id = e.target.dataset.id; if (!id) return;
+  if (e.target.checked) checked[id] = 1; else delete checked[id];
+  e.target.closest(".place").classList.toggle("done", e.target.checked);
+  save(); refresh();
 });
 document.getElementById("reset").onclick = () => {
-  if (confirm("Clear every checkmark on this phone? Places you added will stay.")) { state.checked = {}; save(); render(); }
+  if (!confirm("Clear all checkmarks on this device?")) return;
+  checked = {}; save();
+  document.querySelectorAll(".check").forEach(c => { c.checked = false; c.closest(".place").classList.remove("done"); });
+  refresh();
 };
-
-render();
-if (focusId && focusId !== "d1" && !location.hash) setTimeout(() => document.getElementById(focusId)?.scrollIntoView({behavior:"smooth", block:"start"}), 250);
+refresh();
 </script>
 </body>
 </html>
